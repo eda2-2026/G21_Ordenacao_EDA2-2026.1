@@ -10,13 +10,109 @@ typedef struct {
     int minuto;
 } evento;
 
+void maxMinAno(evento agenda[], int numEventos, int* maxIndex, int* minIndex) {
+    if (numEventos <= 0) {
+        *maxIndex = -1;
+        *minIndex = -1;
+        return;
+    }
+
+    *maxIndex = 0;
+    *minIndex = 0;
+
+    for (int i = 1; i < numEventos; i++) {
+        if (
+            agenda[i].ano > agenda[*maxIndex].ano ||
+            (agenda[i].ano == agenda[*maxIndex].ano &&
+             agenda[i].mes > agenda[*maxIndex].mes)
+        ) {
+            *maxIndex = i;
+        }
+
+        if (
+            agenda[i].ano < agenda[*minIndex].ano ||
+            (agenda[i].ano == agenda[*minIndex].ano &&
+             agenda[i].mes < agenda[*minIndex].mes)
+        ) {
+            *minIndex = i;
+        }
+    }
+}
+
+int indiceBucket(evento agenda[], int maxIndex, int minIndex) {
+    int indice =
+        (agenda[maxIndex].ano - agenda[minIndex].ano) * 12 +
+        (agenda[maxIndex].mes - agenda[minIndex].mes);
+
+    return indice;
+}
+
+int indiceEvento(evento agenda[], int i, int minIndex) {
+    int indice =
+        (agenda[i].ano - agenda[minIndex].ano) * 12 +
+        (agenda[i].mes - agenda[minIndex].mes);
+
+    return indice;
+}
+
+int comparaEvento(evento a, evento b) {
+    if (a.ano != b.ano) return a.ano - b.ano;
+    if (a.mes != b.mes) return a.mes - b.mes;
+    if (a.dia != b.dia) return a.dia - b.dia;
+    if (a.hora != b.hora) return a.hora - b.hora;
+    return a.minuto - b.minuto;
+}
+
+void insertionSort(evento bucket[], int qtd) {
+    for (int i = 1; i < qtd; i++) {
+        evento chave = bucket[i];
+        int j = i - 1;
+
+        while (j >= 0 && comparaEvento(bucket[j], chave) > 0) {
+            bucket[j + 1] = bucket[j];
+            j--;
+        }
+
+        bucket[j + 1] = chave;
+    }
+}
+
+void bucketSort(evento agenda[], int numEventos, int minIndex, int maxIndex) {
+    int totalBuckets = indiceBucket(agenda, maxIndex, minIndex) + 1;
+
+    evento buckets[100][100];
+    int qtdBuckets[100] = {0};
+
+    for (int i = 0; i < numEventos; i++) {
+        int indice = indiceEvento(agenda, i, minIndex);
+
+        buckets[indice][qtdBuckets[indice]] = agenda[i];
+        qtdBuckets[indice]++;
+    }
+
+    for (int i = 0; i < totalBuckets; i++) {
+        insertionSort(buckets[i], qtdBuckets[i]);
+    }
+
+    int k = 0;
+
+    for (int i = 0; i < totalBuckets; i++) {
+        for (int j = 0; j < qtdBuckets[i]; j++) {
+            agenda[k] = buckets[i][j];
+            k++;
+        }
+    }
+}
+
 int main() {
     evento agenda[100];
     int numEventos = 0;
     int opcao;
+    int maiorAnoIndex = 0;
+    int menorAnoIndex = 0;
 
     while (1) {
-        printf("Menu:\n");
+        printf("\nMenu:\n");
         printf("1. Cadastrar evento\n");
         printf("2. Mostrar agenda\n");
         printf("3. Mostrar eventos de um mês específico\n");
@@ -27,36 +123,83 @@ int main() {
 
         switch (opcao) {
             case 1: {
-                printf("Digite nome dia mes ano hora minuto: ");
-                scanf("%s %d %d %d %d %d",
-                    agenda[numEventos].nome,
-                    &agenda[numEventos].dia,
-                    &agenda[numEventos].mes,
-                    &agenda[numEventos].ano,
-                    &agenda[numEventos].hora,
-                    &agenda[numEventos].minuto);
-                    numEventos++;
-                break;
-            }
-            case 2: {
+                if (numEventos >= 100) {
+                    printf("\nAgenda cheia!\n");
+                    break;
+                }
+
+                printf("\nCadastro de evento\n");
+
+                printf("Nome: ");
+                scanf("%s", agenda[numEventos].nome);
+
+                printf("Dia: ");
+                scanf("%d", &agenda[numEventos].dia);
+
+                printf("Mês: ");
+                scanf("%d", &agenda[numEventos].mes);
+
+                printf("Ano: ");
+                scanf("%d", &agenda[numEventos].ano);
+
+                printf("Hora: ");
+                scanf("%d", &agenda[numEventos].hora);
+
+                printf("Minuto: ");
+                scanf("%d", &agenda[numEventos].minuto);
+
+                numEventos++;
+                maxMinAno(agenda, numEventos, &maiorAnoIndex, &menorAnoIndex);
+
+                printf("\nEvento cadastrado com sucesso!\n");
 
                 break;
             }
-            case 3: {
-                int mes;
-                printf("Digite o mês: ");
-                scanf("%d", &mes);
+
+            case 2: {
+                if (numEventos == 0) {
+                    printf("\nAgenda vazia!\n");
+                    break;
+                }
+
+                maxMinAno(agenda, numEventos, &maiorAnoIndex, &menorAnoIndex);
+                bucketSort(agenda, numEventos, menorAnoIndex, maiorAnoIndex);
+
+                printf("\nAgenda ordenada:\n");
+
+                for (int i = 0; i < numEventos; i++) {
+                    printf("%s - %02d/%02d/%d %02d:%02d\n",
+                        agenda[i].nome,
+                        agenda[i].dia,
+                        agenda[i].mes,
+                        agenda[i].ano,
+                        agenda[i].hora,
+                        agenda[i].minuto);
+                }
+
                 break;
             }
+
+            case 3: {
+                int mes;
+
+                printf("Digite o mês: ");
+                scanf("%d", &mes);
+
+                break;
+            }
+
             case 4: {
 
                 break;
             }
+
             case 5: {
                 exit(0);
             }
+
             default: {
-                printf("Opção inválida!\n");
+                printf("\nOpção inválida!\n");
             }
         }
     }
