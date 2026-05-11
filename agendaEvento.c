@@ -122,7 +122,9 @@ int main() {
         scanf("%d", &opcao);
 
         switch (opcao) {
+
             case 1: {
+
                 if (numEventos >= 100) {
                     printf("\nAgenda cheia!\n");
                     break;
@@ -149,7 +151,13 @@ int main() {
                 scanf("%d", &agenda[numEventos].minuto);
 
                 numEventos++;
-                maxMinAno(agenda, numEventos, &maiorAnoIndex, &menorAnoIndex);
+
+                maxMinAno(
+                    agenda,
+                    numEventos,
+                    &maiorAnoIndex,
+                    &menorAnoIndex
+                );
 
                 printf("\nEvento cadastrado com sucesso!\n");
 
@@ -157,48 +165,193 @@ int main() {
             }
 
             case 2: {
+
                 if (numEventos == 0) {
                     printf("\nAgenda vazia!\n");
                     break;
                 }
 
-                maxMinAno(agenda, numEventos, &maiorAnoIndex, &menorAnoIndex);
-                bucketSort(agenda, numEventos, menorAnoIndex, maiorAnoIndex);
+                maxMinAno(
+                    agenda,
+                    numEventos,
+                    &maiorAnoIndex,
+                    &menorAnoIndex
+                );
+
+                bucketSort(
+                    agenda,
+                    numEventos,
+                    menorAnoIndex,
+                    maiorAnoIndex
+                );
 
                 printf("\nAgenda ordenada:\n");
 
                 for (int i = 0; i < numEventos; i++) {
+
                     printf("%s - %02d/%02d/%d %02d:%02d\n",
                         agenda[i].nome,
                         agenda[i].dia,
                         agenda[i].mes,
                         agenda[i].ano,
                         agenda[i].hora,
-                        agenda[i].minuto);
+                        agenda[i].minuto
+                    );
                 }
 
                 break;
             }
 
             case 3: {
-                int mes;
 
-                printf("Digite o mês: ");
+                int mes;
+                int encontrou = 0;
+                int ultimoAno = -1;
+
+                if (numEventos == 0) {
+                    printf("\nAgenda vazia!\n");
+                    break;
+                }
+
+                maxMinAno(
+                    agenda,
+                    numEventos,
+                    &maiorAnoIndex,
+                    &menorAnoIndex
+                );
+
+                bucketSort(
+                    agenda,
+                    numEventos,
+                    menorAnoIndex,
+                    maiorAnoIndex
+                );
+
+                printf("\nDigite o mês: ");
                 scanf("%d", &mes);
+
+                printf("\nEventos do mês %02d:\n", mes);
+
+                for (int i = 0; i < numEventos; i++) {
+
+                    if (agenda[i].mes == mes) {
+
+                        if (agenda[i].ano != ultimoAno) {
+
+                            printf("\n===== %d =====\n",
+                                agenda[i].ano);
+
+                            ultimoAno = agenda[i].ano;
+                        }
+
+                        printf("%s - %02d/%02d/%d %02d:%02d\n",
+                            agenda[i].nome,
+                            agenda[i].dia,
+                            agenda[i].mes,
+                            agenda[i].ano,
+                            agenda[i].hora,
+                            agenda[i].minuto
+                        );
+
+                        encontrou = 1;
+                    }
+                }
+
+                if (encontrou == 0) {
+                    printf("\nNenhum evento encontrado para esse mês.\n");
+                }
 
                 break;
             }
 
             case 4: {
 
+                int diaAtual;
+                int mesAtual;
+                int anoAtual;
+                int horaAtual;
+                int minutoAtual;
+                int encontrou = 0;
+
+                evento atual;
+
+                if (numEventos == 0) {
+                    printf("\nAgenda vazia!\n");
+                    break;
+                }
+
+                maxMinAno(
+                    agenda,
+                    numEventos,
+                    &maiorAnoIndex,
+                    &menorAnoIndex
+                );
+
+                bucketSort(
+                    agenda,
+                    numEventos,
+                    menorAnoIndex,
+                    maiorAnoIndex
+                );
+
+                printf("\nDigite a data e hora atual:\n");
+
+                printf("Dia: ");
+                scanf("%d", &diaAtual);
+
+                printf("Mês: ");
+                scanf("%d", &mesAtual);
+
+                printf("Ano: ");
+                scanf("%d", &anoAtual);
+
+                printf("Hora: ");
+                scanf("%d", &horaAtual);
+
+                printf("Minuto: ");
+                scanf("%d", &minutoAtual);
+
+                atual.dia = diaAtual;
+                atual.mes = mesAtual;
+                atual.ano = anoAtual;
+                atual.hora = horaAtual;
+                atual.minuto = minutoAtual;
+
+                for (int i = 0; i < numEventos; i++) {
+
+                    if (comparaEvento(agenda[i], atual) >= 0) {
+
+                        printf("\nPróximo evento:\n");
+
+                        printf("%s - %02d/%02d/%d %02d:%02d\n",
+                            agenda[i].nome,
+                            agenda[i].dia,
+                            agenda[i].mes,
+                            agenda[i].ano,
+                            agenda[i].hora,
+                            agenda[i].minuto
+                        );
+
+                        encontrou = 1;
+
+                        break;
+                    }
+                }
+
+                if (encontrou == 0) {
+                    printf("\nNão há próximos eventos.\n");
+                }
+
                 break;
             }
 
             case 5: {
+
                 exit(0);
             }
 
             default: {
+
                 printf("\nOpção inválida!\n");
             }
         }
