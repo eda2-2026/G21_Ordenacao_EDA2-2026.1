@@ -11,9 +11,18 @@ Conteúdo da Disciplina: Algoritmos de Ordenação (Estruturas de Dados II)
 
 ## Sobre
 
-Este projeto implementa um sistema de agenda de eventos com o objetivo de aplicar conceitos de estruturas de dados. O sistema permite cadastrar, visualizar e gerenciar eventos com data, hora e descrição, oferecendo funcionalidades como visualização por mês e identificação do próximo evento.
+Este projeto implementa um sistema de agenda de eventos com o objetivo de aplicar conceitos de estruturas de dados e algoritmos de ordenação. O sistema permite cadastrar, visualizar e gerenciar eventos com data e hora, oferecendo funcionalidades como visualização por mês e identificação do próximo evento.
+
+A ordenação dos eventos foi desenvolvida utilizando Bucket Sort combinado com Insertion Sort para organização interna dos buckets, permitindo a ordenação cronológica dos eventos por ano, mês, dia e horário.
+
 
 ## Screenshots
+
+![Menu](img/agenda.png)
+
+![Tabela Hash](img/mes.png)
+
+![Histórico](img/proximo.png)
 
 ## Linguagem Utilizada
 
@@ -73,12 +82,13 @@ Encerra o programa.
 ## Outros
 
 - **Estruturas de dados utilizadas:**
-
+    - Bucket Sort
+    - Insertion Sort
 
 - **Funcionalidades implementadas:**
 
-- Cadastro de múltiplos eventos
-- Armazenamento em vetor de estruturas
-- Listagem completa da agenda
-- Filtro de eventos por mês
-- Identificação do próximo evento futuro
+    - Cadastro de múltiplos eventos
+    - Armazenamento em vetor de estruturas
+    - Listagem completa da agenda
+    - Filtro de eventos por mês
+    - Identificação do próximo evento futuro
