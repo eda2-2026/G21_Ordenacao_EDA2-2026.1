@@ -92,3 +92,7 @@ Encerra o programa.
     - Listagem completa da agenda
     - Filtro de eventos por mês
     - Identificação do próximo evento futuro
+
+ - **Vídeo de explicativo:**
+    - Link: [Clique aqui para assistir](https://youtu.be/Z1tfkz05qEU)
+ 
